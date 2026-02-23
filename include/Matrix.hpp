@@ -1,5 +1,5 @@
-#ifndef MATRIX_HPP
-#define MATRIX_HPP
+#ifndef MATRIX_H
+#define MATRIX_H
 
 #include <iostream>
 #include <vector>
@@ -11,7 +11,7 @@ protected:
     vector<vector<double>> data;
 
 public:
-    Matrix(int rows, int cols);
+    Matrix(int r, int c);
 
     void read();
     void display() const;
@@ -22,12 +22,12 @@ public:
     virtual void info();
 };
 
-
 class GEMatrix : public Matrix {
 public:
-    GEMatrix(int rows, int cols);
+    GEMatrix(int r, int c);
 
     void gaussianElimination();
+    vector<double> backSubstitution();
     void info() override;
 };
 

@@ -1,34 +1,29 @@
-#include "matrix.hpp"
+#include "Matrix.hpp"
 
 int main() {
 
-    int r, c;
-    cout << "Enter rows and cols: ";
-    cin >> r >> c;
+    int n;
+    cout << "Enter number of equations: ";
+    cin >> n;
 
-    GEMatrix A(r, c);
-    GEMatrix B(r, c);
+    GEMatrix A(n, n+1);
 
-    cout << "Matrix A:\n";
+    cout << "Enter augmented matrix:\n";
     A.read();
 
-
-    cout << "Matrix B:\n";
-    B.read();
-
-    cout << "\nAddition:\n";
-    Matrix C = A.add(B);
-    C.display();
-
-    cout << "\nSubtraction:\n";
-    Matrix D = A.subtract(B);
-    D.display();
-
-    cout << "\nGaussian Elimination of A:\n";
-    A.gaussianElimination();
+    cout << "\nOriginal Matrix:\n";
     A.display();
 
-   
+    A.gaussianElimination();
+
+    cout << "\nUpper Triangular Matrix:\n";
+    A.display();
+
+    vector<double> solution = A.backSubstitution();
+
+    cout << "\nSolution:\n";
+    for(int i=0;i<n;i++)
+        cout << "x" << i+1 << " = " << solution[i] << endl;
 
     return 0;
 }
