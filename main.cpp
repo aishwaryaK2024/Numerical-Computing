@@ -1,29 +1,30 @@
 #include "Matrix.hpp"
 
-int main() {
+int main()
+{
+    try {
+        Matrix left("225left.txt");
+        Matrix right("225right.txt");
 
-    int n;
-    cout << "Enter number of equations: ";
-    cin >> n;
+        Matrix augmented = left.createAugmented(right);
 
-    GEMatrix A(n, n+1);
+        GEWithPivot solver(augmented);  
 
-    cout << "Enter augmented matrix:\n";
-    A.read();
+        solver.gaussianElimination();
 
-    cout << "\nOriginal Matrix:\n";
-    A.display();
+        std::vector<double> solution = solver.backSubstitution();
 
-    A.gaussianElimination();
+        std::ofstream out("result225.txt");
+        for (double val : solution)
+            out << val << std::endl;
 
-    cout << "\nUpper Triangular Matrix:\n";
-    A.display();
+        out.close();
 
-    vector<double> solution = A.backSubstitution();
-
-    cout << "\nSolution:\n";
-    for(int i=0;i<n;i++)
-        cout << "x" << i+1 << " = " << solution[i] << endl;
+        std::cout << "Solution written\n";
+    }
+    catch (std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
 
     return 0;
 }
