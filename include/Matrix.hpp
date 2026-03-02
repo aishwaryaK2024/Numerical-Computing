@@ -3,32 +3,29 @@
 
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <fstream>
+#include <stdexcept>
 
 class Matrix {
 protected:
     int rows, cols;
-    vector<vector<double>> data;
+    std::vector<std::vector<double>> data;
 
 public:
     Matrix(int r, int c);
+    Matrix(const std::string& filename);
 
-    void read();
     void display() const;
+    Matrix createAugmented(const Matrix& right) const;
 
-    Matrix add(const Matrix &m) const;
-    Matrix subtract(const Matrix &m) const;
+    Matrix operator+(const Matrix& m) const;
+    Matrix operator-(const Matrix& m) const;
+    Matrix operator*(const Matrix& m) const;
+    Matrix operator/(double scalar) const;
+    bool   operator==(const Matrix& m) const;
+    friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 
-    virtual void info();
-};
-
-class GEMatrix : public Matrix {
-public:
-    GEMatrix(int r, int c);
-
-    void gaussianElimination();
-    vector<double> backSubstitution();
-    void info() override;
+    virtual ~Matrix() {}
 };
 
 #endif
