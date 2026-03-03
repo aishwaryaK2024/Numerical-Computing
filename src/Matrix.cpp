@@ -1,70 +1,85 @@
 #include "Matrix.hpp"
 
 Matrix::Matrix(int r, int c) : rows(r), cols(c) {
-    data.resize(rows, vector<double>(cols));
+    data.resize(rows, std::vector<double>(cols, 0));
 }
 
-void Matrix::read() {
-    for(int i=0;i<rows;i++)
-        for(int j=0;j<cols;j++)
-            cin >> data[i][j];
+Matrix::Matrix(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) throw std::runtime_error("Cannot open file");
+    file >> rows >> cols;
+    data.resize(rows, std::vector<double>(cols));
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            file >> data[i][j];
 }
 
 void Matrix::display() const {
-    for(int i=0;i<rows;i++){
-        for(int j=0;j<cols;j++)
-            cout << data[i][j] << " ";
-        cout << endl;
-    }
+    std::cout << *this;
 }
 
-Matrix Matrix::add(const Matrix &m) const {
+Matrix Matrix::operator+(const Matrix& m) const {
+    if (rows != m.rows || cols != m.cols) throw std::runtime_error("Dimension mismatch");
     Matrix result(rows, cols);
-    for(int i=0;i<rows;i++)
-        for(int j=0;j<cols;j++)
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
             result.data[i][j] = data[i][j] + m.data[i][j];
     return result;
 }
 
-Matrix Matrix::subtract(const Matrix &m) const {
+Matrix Matrix::operator-(const Matrix& m) const {
+    if (rows != m.rows || cols != m.cols) throw std::runtime_error("Dimension mismatch");
     Matrix result(rows, cols);
-    for(int i=0;i<rows;i++)
-        for(int j=0;j<cols;j++)
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
             result.data[i][j] = data[i][j] - m.data[i][j];
     return result;
 }
 
-void Matrix::info() {
-    cout << "Base Matrix Class\n";
+Matrix Matrix::operator*(const Matrix& m) const {
+    if (cols != m.rows) throw std::runtime_error("Dimension mismatch for multiplication");
+    Matrix result(rows, m.cols);
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < m.cols; j++)
+            for (int k = 0; k < cols; k++)
+                result.data[i][j] += data[i][k] * m.data[k][j];
+    return result;
 }
 
-GEMatrix::GEMatrix(int r, int c) : Matrix(r,c) {}
+Matrix Matrix::operator/(double scalar) const {
+    if (scalar == 0) throw std::runtime_error("Division by zero");
+    Matrix result(rows, cols);
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            result.data[i][j] = data[i][j] / scalar;
+    return result;
+}
 
-void GEMatrix::gaussianElimination() {
-    for(int k=0;k<rows-1;k++){
-        for(int i=k+1;i<rows;i++){
-            double factor = data[i][k] / data[k][k];
-            for(int j=k;j<cols;j++)
-                data[i][j] -= factor * data[k][j];
-        }
+bool Matrix::operator==(const Matrix& m) const {
+    if (rows != m.rows || cols != m.cols) return false;
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            if (data[i][j] != m.data[i][j]) return false;
+    return true;
+}
+
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++)
+            os << m.data[i][j] << " ";
+        os << "\n";
     }
+    return os;
 }
 
-
-vector<double> GEMatrix::backSubstitution() {
-    vector<double> x(rows);
-
-    for(int i=rows-1;i>=0;i--){
-        x[i] = data[i][cols-1];
-        for(int j=i+1;j<rows;j++)
-            x[i] -= data[i][j] * x[j];
-
-        x[i] /= data[i][i];
+Matrix Matrix::createAugmented(const Matrix& right) const {
+    if (rows != right.rows) throw std::runtime_error("Row mismatch");
+    Matrix result(rows, cols + right.cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)
+            result.data[i][j] = data[i][j];
+        for (int j = 0; j < right.cols; j++)
+            result.data[i][cols + j] = right.data[i][j];
     }
-
-    return x;
-}
-
-void GEMatrix::info() {
-    cout << "Gaussian Elimination Matrix\n";
+    return result;
 }
