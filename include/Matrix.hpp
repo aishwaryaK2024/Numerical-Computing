@@ -15,14 +15,14 @@ public:
     Matrix(int r, int c);
     Matrix(const std::string& filename);
 
-    void display() const;
-    Matrix createAugmented(const Matrix& right) const;
-
     Matrix operator+(const Matrix& m) const;
     Matrix operator-(const Matrix& m) const;
     Matrix operator*(const Matrix& m) const;
     Matrix operator/(double scalar) const;
     bool   operator==(const Matrix& m) const;
+
+    Matrix createAugmented(const Matrix& right) const;
+
     friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 
     virtual ~Matrix() {}
