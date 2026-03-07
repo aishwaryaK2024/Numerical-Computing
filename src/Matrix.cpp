@@ -1,4 +1,5 @@
-#include "Matrix.hpp"
+#include "../include/Matrix.hpp"
+#include <cmath>
 
 Matrix::Matrix(int r, int c) : rows(r), cols(c) {
     data.resize(rows, std::vector<double>(cols, 0));
@@ -12,10 +13,6 @@ Matrix::Matrix(const std::string& filename) {
     for (int i = 0; i < rows; i++)
         for (int j = 0; j < cols; j++)
             file >> data[i][j];
-}
-
-void Matrix::display() const {
-    std::cout << *this;
 }
 
 Matrix Matrix::operator+(const Matrix& m) const {
@@ -63,6 +60,16 @@ bool Matrix::operator==(const Matrix& m) const {
     return true;
 }
 
+Matrix Matrix::createAugmented(const Matrix& right) const {
+    if (rows != right.rows) throw std::runtime_error("Row mismatch");
+    Matrix result(rows, cols + right.cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)      result.data[i][j]        = data[i][j];
+        for (int j = 0; j < right.cols; j++) result.data[i][cols + j] = right.data[i][j];
+    }
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& os, const Matrix& m) {
     for (int i = 0; i < m.rows; i++) {
         for (int j = 0; j < m.cols; j++)
@@ -70,16 +77,4 @@ std::ostream& operator<<(std::ostream& os, const Matrix& m) {
         os << "\n";
     }
     return os;
-}
-
-Matrix Matrix::createAugmented(const Matrix& right) const {
-    if (rows != right.rows) throw std::runtime_error("Row mismatch");
-    Matrix result(rows, cols + right.cols);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++)
-            result.data[i][j] = data[i][j];
-        for (int j = 0; j < right.cols; j++)
-            result.data[i][cols + j] = right.data[i][j];
-    }
-    return result;
 }
