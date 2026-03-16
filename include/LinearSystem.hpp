@@ -10,7 +10,7 @@ public:
     virtual void solve() = 0;
     virtual vector<double> getSolution() = 0;
 
-    void run(const string& filename);
+    void writeToFile(const string& filename);
 
     virtual ~LinearSystem() {}
 
