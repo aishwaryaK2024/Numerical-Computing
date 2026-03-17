@@ -13,8 +13,9 @@ protected:
 public:
     LUDecomposition(const Matrix& m);
 
-    void solve() override;
-    vector<double> getSolution() override;
+
+    virtual void solve() = 0;
+    virtual vector<double> getSolution() = 0;
 
     virtual ~LUDecomposition() {}
 };
