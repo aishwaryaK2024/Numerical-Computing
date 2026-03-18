@@ -13,4 +13,4 @@ public:
     std::vector<double> getSolution() override;
 };
 
-#endif
+#endif 
