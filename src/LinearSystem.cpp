@@ -28,7 +28,7 @@ vector<double> LinearSystem::forwardSubstitution(const vector<vector<double>>& L
 }
 
 
-void LinearSystem::run(const string& filename) {
+void LinearSystem::writeToFile(const string& filename) {
     solve();
 
     vector<double> sol = getSolution();
