@@ -42,7 +42,7 @@ public:
     friend ostream& operator<<(ostream& os, const Matrix& m);
     friend istream& operator>>(istream& is,Matrix& m);
 
-    virtual ~Matrix() {}
+    virtual ~Matrix() {};
 
 private:
     double det(vector<vector<double>> mat, int n) const;
